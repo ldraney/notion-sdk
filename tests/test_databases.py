@@ -78,7 +78,8 @@ def test_query_database(
 
     # Query via the convenience method (resolves data source automatically)
     result = client.query_database(db["id"])
-    assert result["object"] == "list"
+    assert "templates" in result
+assert isinstance(result["templates"], list)
     assert len(result["results"]) >= 1
 
 
@@ -167,8 +168,10 @@ def test_list_data_source_templates(
 
     # Basic call without pagination params
     result = client.list_data_source_templates(ds_id)
-    assert result["object"] == "list"
+    assert "templates" in result
+assert isinstance(result["templates"], list)
 
     # Call with page_size to verify pagination params are accepted
     result = client.list_data_source_templates(ds_id, page_size=10)
-    assert result["object"] == "list"
+    assert "templates" in result
+assert isinstance(result["templates"], list)
