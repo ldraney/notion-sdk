@@ -142,3 +142,23 @@ def test_get_data_source(
     option_names = {o["name"] for o in options}
     assert "High" in option_names
     assert "Low" in option_names
+
+
+def test_list_data_source_templates(
+    client: NotionClient, test_page_id: str, cleanup_ids: dict
+):
+    """Create a database and list its data source templates (may be empty)."""
+    db = client.create_database(
+        parent={"type": "page_id", "page_id": test_page_id},
+        title=[{"text": {"content": "Templates Test DB"}}],
+        initial_data_source={
+            "properties": {
+                "Name": {"type": "title", "title": {}},
+            }
+        },
+    )
+    cleanup_ids["databases"].append(db["id"])
+
+    ds_id = db["data_sources"][0]["id"]
+    result = client.list_data_source_templates(ds_id)
+    assert result["object"] == "list"
