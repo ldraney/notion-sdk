@@ -37,8 +37,9 @@ db = client.create_database(
 ## API Coverage
 
 - **Search**: search
-- **Pages**: create, get, update, archive
-- **Databases**: create (with properties!), get, update, query
+- **Pages**: create (with template support), get, update (with erase_content), archive, move
+- **Databases**: create (with properties!), get, update, query, archive
+- **Data Sources**: get, update, query, list templates
 - **Blocks**: get, get children, append children, update, delete
 - **Users**: list, get self
 - **Comments**: create, list

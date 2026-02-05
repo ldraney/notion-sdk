@@ -104,3 +104,10 @@ class DatabasesMixin:
         if page_size is not None:
             body["page_size"] = page_size
         return self._post(f"/data_sources/{data_source_id}/query", json=body)
+
+    def list_data_source_templates(
+        self,
+        data_source_id: str,
+    ) -> dict[str, Any]:
+        """GET /v1/data_sources/{data_source_id}/templates — List templates for a data source."""
+        return self._get(f"/data_sources/{data_source_id}/templates")
