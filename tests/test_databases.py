@@ -147,7 +147,11 @@ def test_get_data_source(
 def test_list_data_source_templates(
     client: NotionClient, test_page_id: str, cleanup_ids: dict
 ):
-    """Create a database and list its data source templates (may be empty)."""
+    """Create a database and list its data source templates (may be empty).
+
+    Also exercises the pagination parameters (name, start_cursor, page_size)
+    to verify the method signature accepts them.
+    """
     db = client.create_database(
         parent={"type": "page_id", "page_id": test_page_id},
         title=[{"text": {"content": "Templates Test DB"}}],
@@ -160,5 +164,11 @@ def test_list_data_source_templates(
     cleanup_ids["databases"].append(db["id"])
 
     ds_id = db["data_sources"][0]["id"]
+
+    # Basic call without pagination params
     result = client.list_data_source_templates(ds_id)
+    assert result["object"] == "list"
+
+    # Call with page_size to verify pagination params are accepted
+    result = client.list_data_source_templates(ds_id, page_size=10)
     assert result["object"] == "list"

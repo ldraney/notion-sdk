@@ -13,13 +13,25 @@ class PagesMixin:
         parent: dict[str, Any],
         properties: dict[str, Any],
         children: list[dict[str, Any]] | None = None,
-        template: str | None = None,
+        template: dict[str, Any] | None = None,
         **kwargs: Any,
     ) -> dict[str, Any]:
         """POST /v1/pages — Create a new page.
 
         Args:
-            template: Optional data source template ID to create the page from.
+            parent: Parent object, e.g. ``{"type": "page_id", "page_id": "..."}``.
+            properties: Page properties mapping.
+            children: Optional list of block children to append to the page.
+                Cannot be used when *template* is specified — they are mutually
+                exclusive.
+            template: Optional data-source template dict to create the page
+                from.  Cannot be used together with *children*.  Expected
+                format is one of::
+
+                    {"type": "none"}
+                    {"type": "default"}
+                    {"type": "template_id", "template_id": "<uuid>"}
+
         """
         body: dict[str, Any] = {"parent": parent, "properties": properties}
         if children is not None:
@@ -43,6 +55,11 @@ class PagesMixin:
 
         Args:
             erase_content: If True, clears all block content from the page.
+
+                .. warning::
+                    This is a **destructive, irreversible** operation.  All
+                    block children of the page will be permanently deleted and
+                    cannot be recovered.
         """
         body = dict(kwargs)
         if erase_content is not None:

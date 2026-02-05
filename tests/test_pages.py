@@ -55,8 +55,10 @@ def test_create_page_with_template_param(
     """create_page accepts a template parameter without error.
 
     We pass template=None (the default) and verify the page is created
-    normally. A full template test requires a database with templates
-    configured, so this validates the parameter plumbing.
+    normally.  The ``template`` parameter accepts a dict such as
+    ``{"type": "default"}`` or ``{"type": "template_id", "template_id": "<uuid>"}``.
+    A full dict-based template test requires a database with templates
+    configured, so this validates the parameter plumbing only.
     """
     page = client.create_page(
         parent={"type": "page_id", "page_id": test_page_id},
@@ -65,6 +67,12 @@ def test_create_page_with_template_param(
     )
     cleanup_ids["pages"].append(page["id"])
     assert page["object"] == "page"
+
+    # NOTE: We cannot test template={"type": "default"} or
+    # template={"type": "template_id", "template_id": "..."} here because
+    # that requires a database with pre-configured templates.  The type
+    # annotation (dict[str, Any] | None) ensures callers pass the correct
+    # shape at development time.
 
 
 def test_update_page_erase_content(
