@@ -78,7 +78,8 @@ def test_query_database(
 
     # Query via the convenience method (resolves data source automatically)
     result = client.query_database(db["id"])
-    assert result["object"] == "list"
+    assert "templates" in result
+assert isinstance(result["templates"], list)
     assert len(result["results"]) >= 1
 
 
@@ -142,3 +143,35 @@ def test_get_data_source(
     option_names = {o["name"] for o in options}
     assert "High" in option_names
     assert "Low" in option_names
+
+
+def test_list_data_source_templates(
+    client: NotionClient, test_page_id: str, cleanup_ids: dict
+):
+    """Create a database and list its data source templates (may be empty).
+
+    Also exercises the pagination parameters (name, start_cursor, page_size)
+    to verify the method signature accepts them.
+    """
+    db = client.create_database(
+        parent={"type": "page_id", "page_id": test_page_id},
+        title=[{"text": {"content": "Templates Test DB"}}],
+        initial_data_source={
+            "properties": {
+                "Name": {"type": "title", "title": {}},
+            }
+        },
+    )
+    cleanup_ids["databases"].append(db["id"])
+
+    ds_id = db["data_sources"][0]["id"]
+
+    # Basic call without pagination params
+    result = client.list_data_source_templates(ds_id)
+    assert "templates" in result
+assert isinstance(result["templates"], list)
+
+    # Call with page_size to verify pagination params are accepted
+    result = client.list_data_source_templates(ds_id, page_size=10)
+    assert "templates" in result
+assert isinstance(result["templates"], list)
