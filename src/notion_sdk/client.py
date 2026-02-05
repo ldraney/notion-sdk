@@ -32,7 +32,13 @@ class NotionClient(
     """Synchronous Python client for the Notion API v2025-09-03."""
 
     def __init__(self, api_key: str | None = None, base_url: str = NOTION_BASE_URL):
-        self.api_key = api_key or os.environ["NOTION_API_KEY"]
+        if api_key is None:
+            api_key = os.environ.get("NOTION_API_KEY")
+            if not api_key:
+                raise ValueError(
+                    "No API key provided. Pass api_key= or set NOTION_API_KEY env var."
+                )
+        self.api_key = api_key
         self.base_url = base_url.rstrip("/")
         self._http = httpx.Client(
             base_url=self.base_url,

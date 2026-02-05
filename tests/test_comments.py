@@ -7,6 +7,9 @@ def test_create_and_get_comments(
     client: NotionClient, test_page_id: str
 ):
     """Create a comment on the test page, then list comments."""
+    # NOTE: The Notion API does not support deleting comments, so comments
+    # created by this test will accumulate on the test page across repeated runs.
+
     # Create
     comment = client.create_comment(
         parent={"page_id": test_page_id},

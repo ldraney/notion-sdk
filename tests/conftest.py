@@ -11,7 +11,9 @@ TEST_PAGE_ID = "2fec2a37-9fe0-81c0-a47e-cced7c656073"
 @pytest.fixture(scope="session")
 def client() -> NotionClient:
     """Return a configured NotionClient (reads NOTION_API_KEY from .env)."""
-    return NotionClient()
+    c = NotionClient()
+    yield c
+    c.close()
 
 
 @pytest.fixture(scope="session")

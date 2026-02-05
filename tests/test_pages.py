@@ -6,7 +6,7 @@ from notion_sdk import NotionClient
 def test_get_page(client: NotionClient, test_page_id: str):
     """GET /v1/pages/{page_id} retrieves the test page."""
     page = client.get_page(test_page_id)
-    assert page["id"] == test_page_id.replace("-", "")[:8] + "-" or page["id"]
+    assert page["id"].replace("-", "") == test_page_id.replace("-", "")
     assert page["object"] == "page"
 
 
